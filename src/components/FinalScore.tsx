@@ -34,7 +34,7 @@ export function FinalScore() {
 
   if (!challenge) return null
 
-  const { rounds, date, totalScore } = challenge
+  const { rounds, /*date,*/ totalScore } = challenge
 
   function handleShare() {
     const text = 'Multiline result, play at magazine.guessr'
@@ -49,7 +49,7 @@ export function FinalScore() {
     }
   }
 
-  const pct = (totalScore / 3000) * 100
+  //const pct = (totalScore / 3000) * 100
 
   return (
     <div className="flex-1 overflow-y-auto flex flex-col items-center gap-8 px-6 py-12 animate-fade-up">
