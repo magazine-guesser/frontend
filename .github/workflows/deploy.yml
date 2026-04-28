@@ -39,4 +39,5 @@ jobs:
       - name: Sync to S3
         run: aws s3 sync dist/ s3://infrastack-frontendbucketefe2e19c-6y6aeuptkbkf --delete
 
-      # TODO: cloudfront stuff here
+      - name: Invalidate CloudFront
+        run: aws cloudfront create-invalidation --distribution-id E2GOR6A91J343X --paths "/*"
