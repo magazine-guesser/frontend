@@ -1,9 +1,13 @@
 import type { MagazineSource, DailyChallenge } from './types'
-import { allMagazines } from '../data/magazines'
+import { challengeEntries } from '../data/magazines'
 
 export class ArchiveProvider implements MagazineSource {
   getDailyChallenge(dateStr: string): Promise<DailyChallenge> {
-    return Promise.resolve({ date: dateStr, magazines: allMagazines })
+    const magazines = challengeEntries
+      .filter((e) => e.date === dateStr)
+      .sort((a, b) => a.nr - b.nr)
+      .map(({ date: _date, ...mag }) => mag)
+    return Promise.resolve({ date: dateStr, magazines })
   }
 
   getPageUrl(identifier: string, pageIndex: number, width = 1200): string {

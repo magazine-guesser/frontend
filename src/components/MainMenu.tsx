@@ -109,7 +109,7 @@ export function MainMenu() {
       {/* Footer */}
       <footer className="w-full max-w-sm text-center mt-auto pt-4 flex justify-center items-center gap-3">
         <Link
-          to="/impressum"
+          to="/legal-notice"
           className="font-sans text-sepia-400/30 hover:text-sepia-400/60 text-xs transition-colors"
         >
           Legal Notice
@@ -120,6 +120,13 @@ export function MainMenu() {
           className="font-sans text-sepia-400/30 hover:text-sepia-400/60 text-xs transition-colors"
         >
           Privacy Policy
+        </Link>
+        <span className="text-sepia-400/20 text-xs">|</span>
+        <Link
+          to="/terms"
+          className="font-sans text-sepia-400/30 hover:text-sepia-400/60 text-xs transition-colors"
+        >
+          Terms of Service
         </Link>
       </footer>
 

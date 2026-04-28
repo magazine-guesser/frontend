@@ -1,30 +1,37 @@
 import { useEffect, useState } from 'react'
 import { PageImage } from './PageImage'
 import { api } from '../api'
+import type { Redaction } from '../api/types'
 
 interface Props {
   identifier: string
   currentPage: number
-  pageCount: number
+  pageRange: [number, number]
+  redactions: Redaction[]
   onNext: () => void
   onPrev: () => void
 }
 
-export function MagazineViewer({ identifier, currentPage, pageCount, onNext, onPrev }: Props) {
+export function MagazineViewer({
+  identifier,
+  currentPage,
+  pageRange,
+  redactions,
+  onNext,
+  onPrev,
+}: Props) {
   const [transitioning, setTransitioning] = useState(false)
+  const [rangeStart, rangeEnd] = pageRange
 
-  const canNext = currentPage + 2 < pageCount
-  const canPrev = currentPage > 0
+  const canNext = currentPage + 2 <= rangeEnd
+  const canPrev = currentPage > rangeStart
 
-  // Prefetch next
   useEffect(() => {
-    if (currentPage + 2 < pageCount) {
-      const a = new Image()
-      a.src = api.getPageUrl(identifier, currentPage + 2, 400)
-      const b = new Image()
-      b.src = api.getPageUrl(identifier, currentPage + 3, 400)
-    }
-  }, [identifier, currentPage, pageCount])
+    if (currentPage + 2 <= rangeEnd)
+      new Image().src = api.getPageUrl(identifier, currentPage + 2, 1200)
+    if (currentPage + 3 <= rangeEnd)
+      new Image().src = api.getPageUrl(identifier, currentPage + 3, 1200)
+  }, [identifier, currentPage, rangeEnd])
 
   function handlePrev() {
     if (transitioning || !canPrev) return
@@ -44,7 +51,9 @@ export function MagazineViewer({ identifier, currentPage, pageCount, onNext, onP
     }, 200)
   }
 
-  const spreadLabel = `${currentPage + 1}–${Math.min(currentPage + 2, pageCount)} / ${pageCount}`
+  const totalPages = rangeEnd - rangeStart + 1
+  const relPage = currentPage - rangeStart + 1
+  const spreadLabel = `${relPage}–${Math.min(relPage + 1, totalPages)} / ${totalPages}`
 
   return (
     <div className="relative flex flex-col flex-1 min-h-0 bg-charcoal-900 overflow-hidden">
@@ -58,17 +67,19 @@ export function MagazineViewer({ identifier, currentPage, pageCount, onNext, onP
               identifier={identifier}
               pageIndex={currentPage}
               side="left"
+              redactions={redactions}
             />
           </div>
 
           {/* Right page */}
-          {currentPage + 1 < pageCount ? (
+          {currentPage + 1 <= rangeEnd ? (
             <div className="relative h-full overflow-hidden" style={{ aspectRatio: '0.72' }}>
               <PageImage
                 key={`${identifier}-${currentPage + 1}`}
                 identifier={identifier}
                 pageIndex={currentPage + 1}
                 side="right"
+                redactions={redactions}
               />
             </div>
           ) : (

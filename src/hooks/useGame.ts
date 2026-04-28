@@ -27,6 +27,7 @@ export interface GameActions {
   setSliderYear: (year: number) => void
 }
 
+
 export function useGame(): GameState & GameActions {
   const dateStr = getTodayDateStr()
   const [phase, setPhase] = useState<GamePhase>('loading')
@@ -57,7 +58,6 @@ export function useGame(): GameState & GameActions {
     const result: RoundResult = {
       magazineIdentifier: currentMag.identifier,
       magazineTitle: currentMag.title,
-      publication: currentMag.publication,
       actualYear: currentMag.year,
       guessedYear: year,
       score,
@@ -83,12 +83,12 @@ export function useGame(): GameState & GameActions {
 
   function nextPage() {
     if (!currentMag) return
-    const maxPage = currentMag.pageCount - 2
-    setCurrentPage((p) => Math.min(p + 2, maxPage))
+    setCurrentPage((p) => Math.min(p + 2, currentMag.pageRange[1]))
   }
 
   function prevPage() {
-    setCurrentPage((p) => Math.max(p - 2, 0))
+    if (!currentMag) return
+    setCurrentPage((p) => Math.max(p - 2, currentMag.pageRange[0]))
   }
 
   const totalScore = rounds.reduce((s, r) => s + r.score, 0)

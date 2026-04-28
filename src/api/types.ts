@@ -1,10 +1,19 @@
+export interface Redaction {
+  page: number
+  x: number
+  y: number
+  width: number
+  height: number
+}
+
 export interface Magazine {
+  nr: number
   identifier: string
   title: string
-  publication: string
   year: number
-  pageCount: number
+  pageRange: [number, number]
   startPage: number
+  redactions: Redaction[]
 }
 
 export interface DailyChallenge {
@@ -15,7 +24,6 @@ export interface DailyChallenge {
 export interface RoundResult {
   magazineIdentifier: string
   magazineTitle: string
-  publication: string
   actualYear: number
   guessedYear: number
   score: number

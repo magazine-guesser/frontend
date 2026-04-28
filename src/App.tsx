@@ -4,8 +4,9 @@ import { MainMenu } from './components/MainMenu'
 import { GameScreen } from './components/GameScreen'
 import { FinalScore } from './components/FinalScore'
 import { PreviousChallenges } from './components/PreviousChallenges'
-import { Impressum } from './components/Impressum'
+import { LegalNotice } from './components/LegalNotice'
 import { PrivacyPolicy } from './components/PrivacyPolicy'
+import { TermsOfService } from './components/TermsOfService'
 
 export function App() {
   return (
@@ -15,8 +16,9 @@ export function App() {
         <Route path="/game" element={<GameScreen />} />
         <Route path="/result" element={<FinalScore />} />
         <Route path="/history" element={<PreviousChallenges />} />
-        <Route path="/impressum" element={<Impressum />} />
+        <Route path="/legal-notice" element={<LegalNotice />} />
         <Route path="/privacy" element={<PrivacyPolicy />} />
+        <Route path="/terms" element={<TermsOfService />} />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Route>
     </Routes>
