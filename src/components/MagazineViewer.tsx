@@ -1,6 +1,5 @@
-import { useEffect, useState } from 'react'
+import { useEffect } from 'react'
 import { PageImage } from './PageImage'
-import { api } from '../api'
 import type { Redaction } from '../api/types'
 
 interface Props {
@@ -25,24 +24,14 @@ export function MagazineViewer({
   onPrev,
 }: Props) {
 
-  const [transitioning, setTransitioning] = useState(false)
-
   function handlePrev() {
-    if (transitioning || !canPrev) return
-    setTransitioning(true)
-    setTimeout(() => {
-      onPrev()
-      setTimeout(() => setTransitioning(false), 150)
-    }, 200)
+    if (!canPrev) return
+    onPrev()
   }
 
   function handleNext() {
-    if (transitioning || !canNext) return
-    setTransitioning(true)
-    setTimeout(() => {
-      onNext()
-      setTimeout(() => setTransitioning(false), 150)
-    }, 200)
+    if (!canNext) return
+    onNext()
   }
 
   useEffect(() => {
@@ -52,7 +41,7 @@ export function MagazineViewer({
     }
     window.addEventListener('keydown', handleKey)
     return () => window.removeEventListener('keydown', handleKey)
-  }, [canNext, canPrev, transitioning])
+  }, [canNext, canPrev])
 
   const spreadLabel = `${sequenceIndex}` //TODO: add total page count
 
@@ -90,20 +79,12 @@ export function MagazineViewer({
           )
         })}
       </div>
-      {/* Loading overlay */}
-      <div
-        className={`absolute inset-0 bg-charcoal-900 flex items-center justify-center transition-opacity duration-150 pointer-events-none ${transitioning ? 'opacity-100' : 'opacity-0'
-          }`}
-      >
-        <div className="w-8 h-8 border-2 border-sepia-300/20 border-t-gold-400 rounded-full animate-spin" />
-      </div>
-
       {/* Nav buttons */}
       <div className="absolute inset-y-0 left-0 right-0 flex items-center justify-between pointer-events-none px-2 sm:px-3">
         <button
           onClick={handlePrev}
-          disabled={!canPrev || transitioning}
-          className={`pointer-events-auto w-9 h-9 sm:w-11 sm:h-11 rounded-full flex items-center justify-center bg-charcoal-900/75 border border-white/10 backdrop-blur-sm transition-all duration-150 ${canPrev && !transitioning
+          disabled={!canPrev}
+          className={`pointer-events-auto w-9 h-9 sm:w-11 sm:h-11 rounded-full flex items-center justify-center bg-charcoal-900/75 border border-white/10 backdrop-blur-sm transition-all duration-150 ${canPrev
             ? 'text-sepia-100 hover:bg-charcoal-700 hover:border-gold-400/40 cursor-pointer'
             : 'text-sepia-100/15 cursor-not-allowed'
             }`}
@@ -121,8 +102,8 @@ export function MagazineViewer({
 
         <button
           onClick={handleNext}
-          disabled={!canNext || transitioning}
-          className={`pointer-events-auto w-9 h-9 sm:w-11 sm:h-11 rounded-full flex items-center justify-center bg-charcoal-900/75 border border-white/10 backdrop-blur-sm transition-all duration-150 ${canNext && !transitioning
+          disabled={!canNext}
+          className={`pointer-events-auto w-9 h-9 sm:w-11 sm:h-11 rounded-full flex items-center justify-center bg-charcoal-900/75 border border-white/10 backdrop-blur-sm transition-all duration-150 ${canNext
             ? 'text-sepia-100 hover:bg-charcoal-700 hover:border-gold-400/40 cursor-pointer'
             : 'text-sepia-100/15 cursor-not-allowed'
             }`}
