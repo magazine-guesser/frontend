@@ -65,8 +65,8 @@ export function GameScreen() {
                 i < game.roundIndex
                   ? 'bg-gold-400'
                   : i === game.roundIndex
-                  ? 'bg-gold-400 scale-125'
-                  : 'bg-sepia-300/20'
+                    ? 'bg-gold-400 scale-125'
+                    : 'bg-sepia-300/20'
               }`}
             />
           ))}

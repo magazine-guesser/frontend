@@ -100,10 +100,10 @@ export function useGame(): GameState & GameActions {
   }
 
   function nextPage() {
-    setSequenceIndex(index => Math.min(index + 1, pageSequence.length - 1))
+    setSequenceIndex((index) => Math.min(index + 1, pageSequence.length - 1))
   }
   function prevPage() {
-    setSequenceIndex(index => Math.max(index - 1, 0))
+    setSequenceIndex((index) => Math.max(index - 1, 0))
   }
 
   const totalScore = rounds.reduce((s, r) => s + r.score, 0)
@@ -115,7 +115,7 @@ export function useGame(): GameState & GameActions {
     roundIndex,
     rounds,
     sequenceIndex,
-    pageSequence, 
+    pageSequence,
     canNext,
     canPrev,
     sliderYear,

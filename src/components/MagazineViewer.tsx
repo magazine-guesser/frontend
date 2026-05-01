@@ -1,4 +1,4 @@
-import { useEffect } from 'react'
+import { useCallback, useEffect } from 'react'
 import { PageImage } from './PageImage'
 import type { Redaction } from '../api/types'
 
@@ -23,16 +23,13 @@ export function MagazineViewer({
   onNext,
   onPrev,
 }: Props) {
+  const handlePrev = useCallback(() => {
+    if (canPrev) onPrev()
+  }, [canPrev, onPrev])
 
-  function handlePrev() {
-    if (!canPrev) return
-    onPrev()
-  }
-
-  function handleNext() {
-    if (!canNext) return
-    onNext()
-  }
+  const handleNext = useCallback(() => {
+    if (canNext) onNext()
+  }, [canNext, onNext])
 
   useEffect(() => {
     function handleKey(event: KeyboardEvent) {
@@ -41,13 +38,12 @@ export function MagazineViewer({
     }
     window.addEventListener('keydown', handleKey)
     return () => window.removeEventListener('keydown', handleKey)
-  }, [canNext, canPrev])
+  }, [canNext, canPrev, handleNext, handlePrev])
 
   const spreadLabel = `${sequenceIndex}` //TODO: add total page count
 
   return (
     <div className="relative flex flex-col flex-1 min-h-0 bg-charcoal-900 overflow-hidden">
-
       {/* Outer centering wrapper */}
       <div className="flex flex-1 min-h-0 items-center justify-center p-3">
         {pageSequence.map((left, index) => {
@@ -55,13 +51,17 @@ export function MagazineViewer({
           const isCover = left === 0
 
           return (
-            <div key={left} className='flex h-full gap-1' style={{ display: isActive ? 'flex' : 'none' }}>
+            <div
+              key={left}
+              className="flex h-full gap-1"
+              style={{ display: isActive ? 'flex' : 'none' }}
+            >
               {/*always show left*/}
               <div className="relative h-full overflow-hidden" style={{ aspectRatio: '0.72' }}>
                 <PageImage
                   identifier={identifier}
                   pageIndex={left}
-                  side='left'
+                  side="left"
                   redactions={redactions}
                 />
               </div>
@@ -84,10 +84,11 @@ export function MagazineViewer({
         <button
           onClick={handlePrev}
           disabled={!canPrev}
-          className={`pointer-events-auto w-9 h-9 sm:w-11 sm:h-11 rounded-full flex items-center justify-center bg-charcoal-900/75 border border-white/10 backdrop-blur-sm transition-all duration-150 ${canPrev
-            ? 'text-sepia-100 hover:bg-charcoal-700 hover:border-gold-400/40 cursor-pointer'
-            : 'text-sepia-100/15 cursor-not-allowed'
-            }`}
+          className={`pointer-events-auto w-9 h-9 sm:w-11 sm:h-11 rounded-full flex items-center justify-center bg-charcoal-900/75 border border-white/10 backdrop-blur-sm transition-all duration-150 ${
+            canPrev
+              ? 'text-sepia-100 hover:bg-charcoal-700 hover:border-gold-400/40 cursor-pointer'
+              : 'text-sepia-100/15 cursor-not-allowed'
+          }`}
           aria-label="Previous spread"
         >
           <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -103,10 +104,11 @@ export function MagazineViewer({
         <button
           onClick={handleNext}
           disabled={!canNext}
-          className={`pointer-events-auto w-9 h-9 sm:w-11 sm:h-11 rounded-full flex items-center justify-center bg-charcoal-900/75 border border-white/10 backdrop-blur-sm transition-all duration-150 ${canNext
-            ? 'text-sepia-100 hover:bg-charcoal-700 hover:border-gold-400/40 cursor-pointer'
-            : 'text-sepia-100/15 cursor-not-allowed'
-            }`}
+          className={`pointer-events-auto w-9 h-9 sm:w-11 sm:h-11 rounded-full flex items-center justify-center bg-charcoal-900/75 border border-white/10 backdrop-blur-sm transition-all duration-150 ${
+            canNext
+              ? 'text-sepia-100 hover:bg-charcoal-700 hover:border-gold-400/40 cursor-pointer'
+              : 'text-sepia-100/15 cursor-not-allowed'
+          }`}
           aria-label="Next spread"
         >
           <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">

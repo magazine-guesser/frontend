@@ -20,7 +20,7 @@ function save(data: StoredData): void {
   try {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(data))
   } catch {
-    console.error("Could not access local storage")
+    console.error('Could not access local storage')
   }
 }
 

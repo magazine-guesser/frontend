@@ -1,7 +1,6 @@
 import type { MagazineSource, DailyChallenge, GuessResult } from './types'
 
 export class ArchiveProvider implements MagazineSource {
-
   private readonly baseurl
 
   constructor(baseurl: string) {
@@ -19,7 +18,7 @@ export class ArchiveProvider implements MagazineSource {
     const res = await fetch(`${this.baseurl}/daily/${dateStr}/${nr}/guess`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ year })
+      body: JSON.stringify({ year }),
     })
     return res.json()
   }
