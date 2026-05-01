@@ -28,7 +28,14 @@ export function MagazineViewer({
   const [transitioning, setTransitioning] = useState(false)
   const isCover = currentPage === 0
 
-  //TODO: prefetching
+  useEffect(() => {
+    new Image().src = api.getPageUrl(identifier, 0, 1200) // cover
+    for (const [start, end] of pageRanges) {
+      for (let p = start; p <= end; p++) {
+        new Image().src = api.getPageUrl(identifier, p, 1200)
+      }
+    }
+  }, [identifier])
 
   function handlePrev() {
     if (transitioning || !canPrev) return
@@ -47,6 +54,15 @@ export function MagazineViewer({
       setTimeout(() => setTransitioning(false), 150)
     }, 200)
   }
+
+  useEffect(() => {
+    function handleKey(event: KeyboardEvent) {
+      if (event.key === 'ArrowRight') handleNext()
+      if (event.key === 'ArrowLeft') handlePrev()
+    }
+    window.addEventListener('keydown', handleKey)
+    return () => window.removeEventListener('keydown', handleKey)
+  }, [canNext, canPrev, transitioning])
 
   const spreadLabel = `${currentPage}` //TODO: add total page count
 
@@ -77,17 +93,14 @@ export function MagazineViewer({
                 redactions={redactions}
               />
             </div>
-          ) : (
-            <div className="h-full bg-charcoal-800" style={{ aspectRatio: '0.72' }} />
-          )}
+          ) : null}
         </div>
       </div>
 
       {/* Loading overlay */}
       <div
-        className={`absolute inset-0 bg-charcoal-900 flex items-center justify-center transition-opacity duration-150 pointer-events-none ${
-          transitioning ? 'opacity-100' : 'opacity-0'
-        }`}
+        className={`absolute inset-0 bg-charcoal-900 flex items-center justify-center transition-opacity duration-150 pointer-events-none ${transitioning ? 'opacity-100' : 'opacity-0'
+          }`}
       >
         <div className="w-8 h-8 border-2 border-sepia-300/20 border-t-gold-400 rounded-full animate-spin" />
       </div>
@@ -97,11 +110,10 @@ export function MagazineViewer({
         <button
           onClick={handlePrev}
           disabled={!canPrev || transitioning}
-          className={`pointer-events-auto w-9 h-9 sm:w-11 sm:h-11 rounded-full flex items-center justify-center bg-charcoal-900/75 border border-white/10 backdrop-blur-sm transition-all duration-150 ${
-            canPrev && !transitioning
-              ? 'text-sepia-100 hover:bg-charcoal-700 hover:border-gold-400/40 cursor-pointer'
-              : 'text-sepia-100/15 cursor-not-allowed'
-          }`}
+          className={`pointer-events-auto w-9 h-9 sm:w-11 sm:h-11 rounded-full flex items-center justify-center bg-charcoal-900/75 border border-white/10 backdrop-blur-sm transition-all duration-150 ${canPrev && !transitioning
+            ? 'text-sepia-100 hover:bg-charcoal-700 hover:border-gold-400/40 cursor-pointer'
+            : 'text-sepia-100/15 cursor-not-allowed'
+            }`}
           aria-label="Previous spread"
         >
           <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -117,11 +129,10 @@ export function MagazineViewer({
         <button
           onClick={handleNext}
           disabled={!canNext || transitioning}
-          className={`pointer-events-auto w-9 h-9 sm:w-11 sm:h-11 rounded-full flex items-center justify-center bg-charcoal-900/75 border border-white/10 backdrop-blur-sm transition-all duration-150 ${
-            canNext && !transitioning
-              ? 'text-sepia-100 hover:bg-charcoal-700 hover:border-gold-400/40 cursor-pointer'
-              : 'text-sepia-100/15 cursor-not-allowed'
-          }`}
+          className={`pointer-events-auto w-9 h-9 sm:w-11 sm:h-11 rounded-full flex items-center justify-center bg-charcoal-900/75 border border-white/10 backdrop-blur-sm transition-all duration-150 ${canNext && !transitioning
+            ? 'text-sepia-100 hover:bg-charcoal-700 hover:border-gold-400/40 cursor-pointer'
+            : 'text-sepia-100/15 cursor-not-allowed'
+            }`}
           aria-label="Next spread"
         >
           <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
