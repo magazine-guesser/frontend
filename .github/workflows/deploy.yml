@@ -9,6 +9,9 @@ permissions:
   id-token: write
   contents: read
 
+env:
+  VITE_API_URL: ${{ vars.VITE_API_URL }}
+
 jobs:
   build-and-push:
     runs-on: ubuntu-latest

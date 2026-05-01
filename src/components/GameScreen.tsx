@@ -65,8 +65,8 @@ export function GameScreen() {
                 i < game.roundIndex
                   ? 'bg-gold-400'
                   : i === game.roundIndex
-                  ? 'bg-gold-400 scale-125'
-                  : 'bg-sepia-300/20'
+                    ? 'bg-gold-400 scale-125'
+                    : 'bg-sepia-300/20'
               }`}
             />
           ))}
@@ -93,8 +93,10 @@ export function GameScreen() {
         <>
           <MagazineViewer
             identifier={currentMag.identifier}
-            currentPage={game.currentPage}
-            pageRange={currentMag.pageRange}
+            sequenceIndex={game.sequenceIndex}
+            pageSequence={game.pageSequence}
+            canNext={game.canNext}
+            canPrev={game.canPrev}
             redactions={currentMag.redactions}
             onNext={game.nextPage}
             onPrev={game.prevPage}

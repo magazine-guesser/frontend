@@ -10,8 +10,7 @@ export interface Magazine {
   nr: number
   identifier: string
   title: string
-  year: number
-  pageRange: [number, number]
+  pageRanges: [[number, number]]
   startPage: number
   redactions: Redaction[]
 }
@@ -35,7 +34,14 @@ export interface CompletedChallenge {
   rounds: RoundResult[]
 }
 
+export interface GuessResult {
+  correct_year: number
+  score: number
+  difference: number
+}
+
 export interface MagazineSource {
   getDailyChallenge(dateStr: string): Promise<DailyChallenge>
   getPageUrl(identifier: string, pageIndex: number, width?: number): string
+  submitGuess(dateStr: string, nr: number, year: number): Promise<GuessResult>
 }

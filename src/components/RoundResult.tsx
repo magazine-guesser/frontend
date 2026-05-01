@@ -36,9 +36,7 @@ export function RoundResult({ result, roundIndex, totalRounds, onContinue, isLas
         <p className="font-sans text-sepia-300/70 text-sm tracking-widest uppercase mb-1">
           Round {roundIndex + 1} of {totalRounds}
         </p>
-        <p className="font-sans text-sepia-200 text-lg leading-snug max-w-xs">
-          {magazineTitle}
-        </p>
+        <p className="font-sans text-sepia-200 text-lg leading-snug max-w-xs">{magazineTitle}</p>
       </div>
 
       {/* Score display */}
@@ -76,7 +74,9 @@ export function RoundResult({ result, roundIndex, totalRounds, onContinue, isLas
           <div className="w-px h-8 bg-sepia-300/20 mx-auto" />
         </div>
         <div className="text-center">
-          <div className="text-sepia-400/60 text-xs tracking-widest uppercase mb-1">Actual year</div>
+          <div className="text-sepia-400/60 text-xs tracking-widest uppercase mb-1">
+            Actual year
+          </div>
           <div className="text-gold-400 text-3xl font-medium">{actualYear}</div>
         </div>
       </div>

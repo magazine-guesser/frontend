@@ -8,7 +8,9 @@ export function MainMenu() {
   const todayStr = getTodayDateStr()
   const todayChallenge = getTodayChallenge(todayStr)
   const dateLabel = new Date(todayStr + 'T12:00:00').toLocaleDateString('en-US', {
-    weekday: 'long', month: 'long', day: 'numeric',
+    weekday: 'long',
+    month: 'long',
+    day: 'numeric',
   })
 
   function handlePlay() {
@@ -23,7 +25,6 @@ export function MainMenu() {
     <div className="flex-1 overflow-y-auto flex flex-col items-center justify-center px-6 py-16 gap-10">
       {/* Headline */}
       <div className="text-center max-w-xl">
-
         <h1 className="font-sans font-black text-5xl sm:text-7xl leading-none text-sepia-100 mb-3">
           Magazine
           <br />
@@ -47,7 +48,9 @@ export function MainMenu() {
             {todayChallenge ? (
               <div className="flex items-center justify-between mb-4">
                 <div>
-                  <p className="font-mono text-xs text-sepia-400/60 tracking-widest uppercase mb-1">Your score</p>
+                  <p className="font-mono text-xs text-sepia-400/60 tracking-widest uppercase mb-1">
+                    Your score
+                  </p>
                   <p
                     className="font-mono font-medium text-3xl tabular-nums"
                     style={{ color: scoreToColor(todayChallenge.totalScore / 3) }}
@@ -57,13 +60,18 @@ export function MainMenu() {
                   </p>
                 </div>
                 <div className="text-right">
-                  <p className="font-mono text-xs text-sepia-400/60 tracking-widest uppercase mb-1">Rounds</p>
+                  <p className="font-mono text-xs text-sepia-400/60 tracking-widest uppercase mb-1">
+                    Rounds
+                  </p>
                   <div className="flex gap-1 justify-end">
                     {todayChallenge.rounds.map((r, i) => (
                       <div
                         key={i}
                         className="w-8 h-8 rounded-sm flex items-center justify-center font-mono text-xs font-medium"
-                        style={{ background: scoreToColor(r.score) + '22', color: scoreToColor(r.score) }}
+                        style={{
+                          background: scoreToColor(r.score) + '22',
+                          color: scoreToColor(r.score),
+                        }}
                       >
                         {Math.round(r.score / 100)}
                       </div>
@@ -98,8 +106,12 @@ export function MainMenu() {
         className="flex items-center gap-2 font-sans text-sepia-400/60 hover:text-sepia-300 text-base transition-colors group"
       >
         <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5}
-            d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth={1.5}
+            d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
+          />
         </svg>
         <span className="underline underline-offset-4 decoration-sepia-400/30 group-hover:decoration-sepia-300">
           Previous Challenges
@@ -129,7 +141,6 @@ export function MainMenu() {
           Terms of Service
         </Link>
       </footer>
-
     </div>
   )
 }
