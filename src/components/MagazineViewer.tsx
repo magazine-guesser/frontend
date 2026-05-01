@@ -63,7 +63,7 @@ export function MagazineViewer({
       <div className="flex flex-1 min-h-0 items-center justify-center p-3">
         {pageSequence.map((left, index) => {
           const isActive = index === sequenceIndex
-          const isCover = sequenceIndex === 0
+          const isCover = left === 0
 
           return (
             <div key={left} className='flex h-full gap-1' style={{ display: isActive ? 'flex' : 'none' }}>
