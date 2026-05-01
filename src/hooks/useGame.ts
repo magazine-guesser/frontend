@@ -12,7 +12,8 @@ export interface GameState {
   magazines: Magazine[]
   roundIndex: number
   rounds: RoundResult[]
-  currentPage: number
+  sequenceIndex: number
+  pageSequence: number[]
   canNext: boolean
   canPrev: boolean
   sliderYear: number
@@ -28,14 +29,14 @@ export interface GameActions {
   setSliderYear: (year: number) => void
 }
 
-function buildStops(pageRanges: [number, number][]): number[] {
-  const stops: number[] = [0]
+function buildPageSequence(pageRanges: [number, number][]): number[] {
+  const sequence: number[] = [0]
   for (const [start, end] of pageRanges) {
     for (let page = start; page <= end; page += 2) {
-      stops.push(page)
+      sequence.push(page)
     }
   }
-  return stops
+  return sequence
 }
 
 export function useGame(): GameState & GameActions {
@@ -44,7 +45,7 @@ export function useGame(): GameState & GameActions {
   const [challenge, setChallenge] = useState<DailyChallenge | null>(null)
   const [roundIndex, setRoundIndex] = useState(0)
   const [rounds, setRounds] = useState<RoundResult[]>([])
-  const [stopIndex, setStopIndex] = useState(0)
+  const [sequenceIndex, setSequenceIndex] = useState(0)
   const [sliderYear, setSliderYear] = useState(1960)
   const [error, setError] = useState<string | null>(null)
 
@@ -53,7 +54,7 @@ export function useGame(): GameState & GameActions {
       try {
         const challenge = await api.getDailyChallenge(dateStr)
         setChallenge(challenge)
-        setStopIndex(challenge?.magazines[0].startPage ?? 0)
+        setSequenceIndex(challenge?.magazines[0].startPage ?? 0)
         setPhase('viewing')
       } catch {
         setError('Failed to load daily challange. Please try again')
@@ -64,9 +65,9 @@ export function useGame(): GameState & GameActions {
 
   const magazines = challenge?.magazines ?? []
   const currentMag: Magazine | undefined = magazines[roundIndex]
-  const stops = buildStops(currentMag?.pageRanges ?? [])
-  const canNext = stopIndex < stops.length - 1
-  const canPrev = stopIndex > 0
+  const pageSequence = buildPageSequence(currentMag?.pageRanges ?? [])
+  const canNext = sequenceIndex < pageSequence.length - 1
+  const canPrev = sequenceIndex > 0
 
   async function submitGuess(year: number) {
     if (!currentMag) return
@@ -92,17 +93,17 @@ export function useGame(): GameState & GameActions {
     } else {
       const nextIdx = roundIndex + 1
       setRoundIndex(nextIdx)
-      setStopIndex(magazines[nextIdx]?.startPage ?? 0)
+      setSequenceIndex(magazines[nextIdx]?.startPage ?? 0)
       setSliderYear(1960)
       setPhase('viewing')
     }
   }
 
   function nextPage() {
-    setStopIndex(index => Math.min(index + 1, stops.length - 1))
+    setSequenceIndex(index => Math.min(index + 1, pageSequence.length - 1))
   }
   function prevPage() {
-    setStopIndex(index => Math.max(index - 1, 0))
+    setSequenceIndex(index => Math.max(index - 1, 0))
   }
 
   const totalScore = rounds.reduce((s, r) => s + r.score, 0)
@@ -113,7 +114,8 @@ export function useGame(): GameState & GameActions {
     magazines,
     roundIndex,
     rounds,
-    currentPage: stops[stopIndex] ?? 0,
+    sequenceIndex,
+    pageSequence, 
     canNext,
     canPrev,
     sliderYear,

@@ -5,10 +5,10 @@ import type { Redaction } from '../api/types'
 
 interface Props {
   identifier: string
-  currentPage: number
-  pageRanges: [number, number][]
-  canNext: boolean,
-  canPrev: boolean,
+  sequenceIndex: number
+  pageSequence: number[]
+  canNext: boolean
+  canPrev: boolean
   redactions: Redaction[]
   onNext: () => void
   onPrev: () => void
@@ -16,8 +16,8 @@ interface Props {
 
 export function MagazineViewer({
   identifier,
-  currentPage,
-  pageRanges,
+  sequenceIndex,
+  pageSequence,
   canNext,
   canPrev,
   redactions,
@@ -26,16 +26,6 @@ export function MagazineViewer({
 }: Props) {
 
   const [transitioning, setTransitioning] = useState(false)
-  const isCover = currentPage === 0
-
-  useEffect(() => {
-    new Image().src = api.getPageUrl(identifier, 0, 1200) // cover
-    for (const [start, end] of pageRanges) {
-      for (let p = start; p <= end; p++) {
-        new Image().src = api.getPageUrl(identifier, p, 1200)
-      }
-    }
-  }, [identifier])
 
   function handlePrev() {
     if (transitioning || !canPrev) return
@@ -64,39 +54,42 @@ export function MagazineViewer({
     return () => window.removeEventListener('keydown', handleKey)
   }, [canNext, canPrev, transitioning])
 
-  const spreadLabel = `${currentPage}` //TODO: add total page count
+  const spreadLabel = `${sequenceIndex}` //TODO: add total page count
 
   return (
     <div className="relative flex flex-col flex-1 min-h-0 bg-charcoal-900 overflow-hidden">
+
       {/* Outer centering wrapper */}
       <div className="flex flex-1 min-h-0 items-center justify-center p-3">
-        <div className="flex h-full gap-1">
-          {/* Aspect ratio reserves space for left page */}
-          <div className="relative h-full overflow-hidden" style={{ aspectRatio: '0.72' }}>
-            <PageImage
-              key={`${identifier}-${currentPage}`}
-              identifier={identifier}
-              pageIndex={currentPage}
-              side="left"
-              redactions={redactions}
-            />
-          </div>
+        {pageSequence.map((left, index) => {
+          const isActive = index === sequenceIndex
+          const isCover = sequenceIndex === 0
 
-          {/* Right page */}
-          {!isCover ? (
-            <div className="relative h-full overflow-hidden" style={{ aspectRatio: '0.72' }}>
-              <PageImage
-                key={`${identifier}-${currentPage + 1}`}
-                identifier={identifier}
-                pageIndex={currentPage + 1}
-                side="right"
-                redactions={redactions}
-              />
+          return (
+            <div key={left} className='flex h-full gap-1' style={{ display: isActive ? 'flex' : 'none' }}>
+              {/*always show left*/}
+              <div className="relative h-full overflow-hidden" style={{ aspectRatio: '0.72' }}>
+                <PageImage
+                  identifier={identifier}
+                  pageIndex={left}
+                  side='left'
+                  redactions={redactions}
+                />
+              </div>
+              {!isCover && (
+                <div className="relative h-full overflow-hidden" style={{ aspectRatio: '0.72' }}>
+                  <PageImage
+                    identifier={identifier}
+                    pageIndex={left + 1}
+                    side="right"
+                    redactions={redactions}
+                  />
+                </div>
+              )}
             </div>
-          ) : null}
-        </div>
+          )
+        })}
       </div>
-
       {/* Loading overlay */}
       <div
         className={`absolute inset-0 bg-charcoal-900 flex items-center justify-center transition-opacity duration-150 pointer-events-none ${transitioning ? 'opacity-100' : 'opacity-0'
