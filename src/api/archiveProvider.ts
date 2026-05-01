@@ -1,13 +1,27 @@
-import type { MagazineSource, DailyChallenge } from './types'
-import { challengeEntries } from '../data/magazines'
+import type { MagazineSource, DailyChallenge, GuessResult } from './types'
 
 export class ArchiveProvider implements MagazineSource {
-  getDailyChallenge(dateStr: string): Promise<DailyChallenge> {
-    const magazines = challengeEntries
-      .filter((e) => e.date === dateStr)
-      .sort((a, b) => a.nr - b.nr)
-      .map(({ date: _date, ...mag }) => mag)
-    return Promise.resolve({ date: dateStr, magazines })
+
+  private readonly baseurl
+
+  constructor(baseurl: string) {
+    this.baseurl = baseurl
+  }
+
+  async getDailyChallenge(dateStr: string): Promise<DailyChallenge> {
+    const res = await fetch(`${this.baseurl}/daily/${dateStr}`)
+    if (!res.ok) throw new Error('Failed to fetch daily challenge')
+    const magazines = await res.json()
+    return { date: dateStr, magazines }
+  }
+
+  async submitGuess(dateStr: string, nr: number, year: number): Promise<GuessResult> {
+    const res = await fetch(`${this.baseurl}/daily/${dateStr}/${nr}/guess`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ year })
+    })
+    return res.json()
   }
 
   getPageUrl(identifier: string, pageIndex: number, width = 1200): string {

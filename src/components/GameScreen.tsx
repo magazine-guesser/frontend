@@ -94,7 +94,9 @@ export function GameScreen() {
           <MagazineViewer
             identifier={currentMag.identifier}
             currentPage={game.currentPage}
-            pageRange={currentMag.pageRange}
+            pageRanges={currentMag.pageRanges}
+            canNext={game.canNext}
+            canPrev={game.canPrev}
             redactions={currentMag.redactions}
             onNext={game.nextPage}
             onPrev={game.prevPage}

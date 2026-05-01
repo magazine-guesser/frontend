@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react'
 import type { Magazine, RoundResult, DailyChallenge } from '../api/types'
 import { api } from '../api'
-import { calculateScore } from '../utils/scoring'
 import { saveChallengeResult } from '../utils/storage'
 import { getTodayDateStr } from '../utils/dateUtils'
 
@@ -14,6 +13,8 @@ export interface GameState {
   roundIndex: number
   rounds: RoundResult[]
   currentPage: number
+  canNext: boolean
+  canPrev: boolean
   sliderYear: number
   totalScore: number
   error: string | null
@@ -27,6 +28,15 @@ export interface GameActions {
   setSliderYear: (year: number) => void
 }
 
+function buildStops(pageRanges: [number, number][]): number[] {
+  const stops: number[] = [0]
+  for (const [start, end] of pageRanges) {
+    for (let page = start; page <= end; page += 2) {
+      stops.push(page)
+    }
+  }
+  return stops
+}
 
 export function useGame(): GameState & GameActions {
   const dateStr = getTodayDateStr()
@@ -34,33 +44,40 @@ export function useGame(): GameState & GameActions {
   const [challenge, setChallenge] = useState<DailyChallenge | null>(null)
   const [roundIndex, setRoundIndex] = useState(0)
   const [rounds, setRounds] = useState<RoundResult[]>([])
-  const [currentPage, setCurrentPage] = useState(0)
+  const [stopIndex, setStopIndex] = useState(0)
   const [sliderYear, setSliderYear] = useState(1960)
   const [error, setError] = useState<string | null>(null)
 
   useEffect(() => {
-    api
-      .getDailyChallenge(dateStr)
-      .then((c) => {
-        setChallenge(c)
-        setCurrentPage(c.magazines[0].startPage)
+    async function load() {
+      try {
+        const challenge = await api.getDailyChallenge(dateStr)
+        setChallenge(challenge)
+        setStopIndex(challenge?.magazines[0].startPage ?? 0)
         setPhase('viewing')
-      })
-      .catch(() => setError('Failed to load daily challenge. Please try again.'))
+      } catch {
+        setError('Failed to load daily challange. Please try again')
+      }
+    }
+    load()
   }, [dateStr])
 
   const magazines = challenge?.magazines ?? []
   const currentMag: Magazine | undefined = magazines[roundIndex]
+  const stops = buildStops(currentMag?.pageRanges ?? [])
+  const canNext = stopIndex < stops.length - 1
+  const canPrev = stopIndex > 0
 
-  function submitGuess(year: number) {
+  async function submitGuess(year: number) {
     if (!currentMag) return
-    const score = calculateScore(year, currentMag.year)
+
+    const guessResult = await api.submitGuess(dateStr, currentMag.nr, year)
     const result: RoundResult = {
       magazineIdentifier: currentMag.identifier,
       magazineTitle: currentMag.title,
-      actualYear: currentMag.year,
+      actualYear: guessResult.correct_year,
       guessedYear: year,
-      score,
+      score: guessResult.score,
     }
     const newRounds = [...rounds, result]
     setRounds(newRounds)
@@ -75,20 +92,17 @@ export function useGame(): GameState & GameActions {
     } else {
       const nextIdx = roundIndex + 1
       setRoundIndex(nextIdx)
-      setCurrentPage(magazines[nextIdx]?.startPage ?? 0)
+      setStopIndex(magazines[nextIdx]?.startPage ?? 0)
       setSliderYear(1960)
       setPhase('viewing')
     }
   }
 
   function nextPage() {
-    if (!currentMag) return
-    setCurrentPage((p) => Math.min(p + 2, currentMag.pageRange[1]))
+    setStopIndex(index => Math.min(index + 1, stops.length - 1))
   }
-
   function prevPage() {
-    if (!currentMag) return
-    setCurrentPage((p) => Math.max(p - 2, currentMag.pageRange[0]))
+    setStopIndex(index => Math.max(index - 1, 0))
   }
 
   const totalScore = rounds.reduce((s, r) => s + r.score, 0)
@@ -99,7 +113,9 @@ export function useGame(): GameState & GameActions {
     magazines,
     roundIndex,
     rounds,
-    currentPage,
+    currentPage: stops[stopIndex] ?? 0,
+    canNext,
+    canPrev,
     sliderYear,
     totalScore,
     error,
