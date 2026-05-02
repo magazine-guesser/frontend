@@ -35,6 +35,25 @@ describe('useGame', () => {
     const { result } = renderHook(() => useGame())
 
     await waitFor(() => expect(result.current.phase).toBe('viewing'))
+
+    expect(result.current.sequenceIndex).toBe(0)
+  })
+
+  it('nextPage increments sequenceIndex', async () => {
+    const { result } = renderHook(() => useGame())
+    await waitFor(() => expect(result.current.phase).toBe('viewing'))
+
+    act(() => result.current.nextPage())
+
+    expect(result.current.sequenceIndex).toBe(1)
+  })
+
+  it('prevPage does nothing at the start', async () => {
+    const { result } = renderHook(() => useGame())
+    await waitFor(() => expect(result.current.phase).toBe('viewing'))
+
+    act(() => result.current.prevPage())
+
     expect(result.current.sequenceIndex).toBe(0)
   })
 })
