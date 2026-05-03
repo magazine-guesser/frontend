@@ -198,89 +198,77 @@ export function MagazineEditor({ value, onChange }: Props) {
       </div>
 
       {/* Page navigation + canvas */}
-      {pages.length > 0 && value.identifier && (
-        <div className="flex flex-col gap-2">
-          {isLoading ? (
-            <div className="flex flex-col gap-2">
-              <div className="flex items-center justify-between text-xs font-mono text-sepia-400">
-                <span>Loading pages…</span>
-                <span>
-                  {loadedCount} / {pages.length}
-                </span>
-              </div>
-              <div className="h-1 w-full bg-charcoal-700 rounded-full overflow-hidden">
-                <div
-                  className="h-full bg-gold-500 rounded-full transition-all duration-150"
-                  style={{ width: `${(loadedCount / pages.length) * 100}%` }}
-                />
-              </div>
+      {pages.length > 0 &&
+        value.identifier &&
+        (isLoading ? (
+          <div className="flex flex-col gap-2">
+            <div className="flex items-center justify-between text-xs font-mono text-sepia-400">
+              <span>Loading pages…</span>
+              <span>
+                {loadedCount} / {pages.length}
+              </span>
             </div>
-          ) : (
-            <div className="flex flex-col gap-2">
-              <div className="flex items-center gap-2">
-                <button
-                  onClick={handlePrev}
-                  disabled={!canPrev}
-                  aria-label="Previous page"
-                  className={`w-8 h-8 rounded-full flex items-center justify-center border transition-all ${
-                    canPrev
-                      ? 'border-charcoal-500 text-sepia-200 hover:border-gold-400/60 hover:text-gold-300 cursor-pointer'
-                      : 'border-charcoal-700 text-sepia-600 cursor-not-allowed'
-                  }`}
-                >
-                  <svg
-                    className="w-3.5 h-3.5"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M15 19l-7-7 7-7"
-                    />
-                  </svg>
-                </button>
-                <span className="font-mono text-xs text-sepia-600 min-w-[4rem] text-center">
-                  {seqIndex + 1}/{pages.length}
-                </span>
-                <button
-                  onClick={handleNext}
-                  disabled={!canNext}
-                  aria-label="Next page"
-                  className={`w-8 h-8 rounded-full flex items-center justify-center border transition-all ${
-                    canNext
-                      ? 'border-charcoal-500 text-sepia-200 hover:border-gold-400/60 hover:text-gold-300 cursor-pointer'
-                      : 'border-charcoal-700 text-sepia-600 cursor-not-allowed'
-                  }`}
-                >
-                  <svg
-                    className="w-3.5 h-3.5"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M9 5l7 7-7 7"
-                    />
-                  </svg>
-                </button>
-              </div>
-              <RedactionCanvas
-                identifier={value.identifier}
-                pageIndex={activePageIndex}
-                redactions={value.redactions}
-                onAddRedaction={handleAddRedaction}
-                onRemoveRedaction={handleRemoveRedaction}
+            <div className="h-1 w-full bg-charcoal-700 rounded-full overflow-hidden">
+              <div
+                className="h-full bg-gold-500 rounded-full transition-all duration-150"
+                style={{ width: `${(loadedCount / pages.length) * 100}%` }}
               />
             </div>
-          )}
-        </div>
-      )}
+          </div>
+        ) : (
+          <div className="flex flex-col gap-2">
+            <div className="flex items-center gap-2">
+              <button
+                onClick={handlePrev}
+                disabled={!canPrev}
+                aria-label="Previous page"
+                className={`w-8 h-8 rounded-full flex items-center justify-center border transition-all ${
+                  canPrev
+                    ? 'border-charcoal-500 text-sepia-200 hover:border-gold-400/60 hover:text-gold-300 cursor-pointer'
+                    : 'border-charcoal-700 text-sepia-600 cursor-not-allowed'
+                }`}
+              >
+                <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M15 19l-7-7 7-7"
+                  />
+                </svg>
+              </button>
+              <span className="font-mono text-xs text-sepia-600 min-w-[4rem] text-center">
+                {seqIndex + 1}/{pages.length}
+              </span>
+              <button
+                onClick={handleNext}
+                disabled={!canNext}
+                aria-label="Next page"
+                className={`w-8 h-8 rounded-full flex items-center justify-center border transition-all ${
+                  canNext
+                    ? 'border-charcoal-500 text-sepia-200 hover:border-gold-400/60 hover:text-gold-300 cursor-pointer'
+                    : 'border-charcoal-700 text-sepia-600 cursor-not-allowed'
+                }`}
+              >
+                <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M9 5l7 7-7 7"
+                  />
+                </svg>
+              </button>
+            </div>
+            <RedactionCanvas
+              identifier={value.identifier}
+              pageIndex={activePageIndex}
+              redactions={value.redactions}
+              onAddRedaction={handleAddRedaction}
+              onRemoveRedaction={handleRemoveRedaction}
+            />
+          </div>
+        ))}
     </div>
   )
 }

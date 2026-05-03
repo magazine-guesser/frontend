@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import type { MagazinePoolEntry } from '../../api/types'
 import { MagazineEditor, defaultMagazine } from './MagazineEditor'
 
@@ -11,6 +11,8 @@ export function AdminPage() {
   const [saving, setSaving] = useState(false)
   const [saveMsg, setSaveMsg] = useState<string | null>(null)
   const [error, setError] = useState<string | null>(null)
+  const saveMsgTimer = useRef<ReturnType<typeof setTimeout>>()
+  useEffect(() => () => clearTimeout(saveMsgTimer.current), [])
 
   function updateMagazine(index: number, value: MagazinePoolEntry) {
     setMagazines((prev) => prev.map((m, i) => (i === index ? value : m)))
@@ -37,7 +39,8 @@ export function AdminPage() {
       if (!res.ok) throw new Error(`Submit failed (${res.status})`)
       setSaveMsg(`Added ${magazines.length} magazine${magazines.length > 1 ? 's' : ''} to pool`)
       setMagazines([defaultMagazine()])
-      setTimeout(() => setSaveMsg(null), 4000)
+      clearTimeout(saveMsgTimer.current)
+      saveMsgTimer.current = setTimeout(() => setSaveMsg(null), 4000)
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Submit failed')
     } finally {

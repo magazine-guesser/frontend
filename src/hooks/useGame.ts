@@ -57,7 +57,7 @@ export function useGame(): GameState & GameActions {
         setSequenceIndex(challenge?.magazines[0].startPage ?? 0)
         setPhase('viewing')
       } catch {
-        setError('Failed to load daily challange. Please try again')
+        setError('Failed to load daily challenge. Please try again')
       }
     }
     load()
