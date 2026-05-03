@@ -40,8 +40,11 @@ export function MagazineViewer({
     return () => window.removeEventListener('keydown', handleKey)
   }, [canNext, canPrev, handleNext, handlePrev])
 
+  const spreadLabel = `${sequenceIndex}` //TODO: add total page count
+
   return (
     <div className="relative flex flex-col flex-1 min-h-0 bg-charcoal-900 overflow-hidden">
+      {/* Outer centering wrapper */}
       <div className="flex flex-1 min-h-0 items-center justify-center p-3">
         {pageSequence.map((left, index) => {
           const isActive = index === sequenceIndex
@@ -53,6 +56,7 @@ export function MagazineViewer({
               className="flex h-full gap-1"
               style={{ display: isActive ? 'flex' : 'none' }}
             >
+              {/*always show left*/}
               <div className="relative h-full overflow-hidden" style={{ aspectRatio: '0.72' }}>
                 <PageImage
                   identifier={identifier}
@@ -75,6 +79,7 @@ export function MagazineViewer({
           )
         })}
       </div>
+      {/* Nav buttons */}
       <div className="absolute inset-y-0 left-0 right-0 flex items-center justify-between pointer-events-none px-2 sm:px-3">
         <button
           onClick={handlePrev}
@@ -112,8 +117,9 @@ export function MagazineViewer({
         </button>
       </div>
 
+      {/* Page counter */}
       <div className="absolute top-2 left-1/2 -translate-x-1/2 bg-charcoal-900/70 backdrop-blur-sm px-3 py-1 rounded-full border border-white/10">
-        <span className="font-mono text-xs text-sepia-300/60">{sequenceIndex}</span>
+        <span className="font-mono text-xs text-sepia-300/60">{spreadLabel}</span>
       </div>
     </div>
   )

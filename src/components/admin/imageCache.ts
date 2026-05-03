@@ -1,4 +1,4 @@
-const imageCache = new Map<string, HTMLImageElement>()
+export const imageCache = new Map<string, HTMLImageElement>()
 
 export function getPageUrl(identifier: string, pageIndex: number): string {
   return `https://archive.org/download/${identifier}/page/n${pageIndex}_w1200.jpg`
