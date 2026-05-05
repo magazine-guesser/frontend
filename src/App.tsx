@@ -7,6 +7,7 @@ import { PreviousChallenges } from './components/PreviousChallenges'
 import { LegalNotice } from './components/LegalNotice'
 import { PrivacyPolicy } from './components/PrivacyPolicy'
 import { TermsOfService } from './components/TermsOfService'
+import { AdminPage } from './components/admin/AdminPage'
 
 export function App() {
   return (
@@ -21,6 +22,7 @@ export function App() {
         <Route path="/terms" element={<TermsOfService />} />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Route>
+      <Route path="/admin" element={<AdminPage />} />
     </Routes>
   )
 }
