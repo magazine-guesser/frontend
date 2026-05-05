@@ -1,5 +1,6 @@
 import type { MagazineSource } from './types'
 import { ArchiveProvider } from './archiveProvider'
 
-// TODO: replace this with backend api call
-export const api: MagazineSource = new ArchiveProvider()
+const BASE_URL = import.meta.env.VITE_API_URL
+
+export const api: MagazineSource = new ArchiveProvider(BASE_URL)

@@ -57,7 +57,9 @@
   border: 2px solid #e2c46a;
   box-shadow: 0 0 12px rgba(201, 168, 76, 0.5);
   cursor: pointer;
-  transition: box-shadow 0.15s ease, transform 0.15s ease;
+  transition:
+    box-shadow 0.15s ease,
+    transform 0.15s ease;
 }
 
 .year-slider::-webkit-slider-thumb:hover {

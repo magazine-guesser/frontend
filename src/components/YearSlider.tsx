@@ -67,9 +67,10 @@ export function YearSlider({ value, onChange, onSubmit, disabled }: Props) {
               w-28 text-center font-mono font-medium text-3xl tabular-nums
               bg-charcoal-700 border rounded px-2 py-1 outline-none transition-colors
               [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none
-              ${hasMoved
-                ? 'border-gold-400/60 text-gold-400 focus:border-gold-400'
-                : 'border-white/10 text-sepia-400/60 focus:border-white/20'
+              ${
+                hasMoved
+                  ? 'border-gold-400/60 text-gold-400 focus:border-gold-400'
+                  : 'border-white/10 text-sepia-400/60 focus:border-white/20'
               }
               ${disabled ? 'opacity-40 cursor-not-allowed' : ''}
             `}
@@ -100,9 +101,10 @@ export function YearSlider({ value, onChange, onSubmit, disabled }: Props) {
           disabled={!hasMoved || disabled}
           className={`
             w-full py-3 font-sans font-medium text-base rounded transition-all duration-150
-            ${hasMoved && !disabled
-              ? 'bg-gold-400 hover:bg-gold-300 text-charcoal-900 cursor-pointer shadow-[0_0_16px_rgba(201,168,76,0.25)]'
-              : 'bg-charcoal-700 text-sepia-300/25 cursor-not-allowed'
+            ${
+              hasMoved && !disabled
+                ? 'bg-gold-400 hover:bg-gold-300 text-charcoal-900 cursor-pointer shadow-[0_0_16px_rgba(201,168,76,0.25)]'
+                : 'bg-charcoal-700 text-sepia-300/25 cursor-not-allowed'
             }
           `}
         >
