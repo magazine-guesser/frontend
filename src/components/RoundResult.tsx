@@ -12,7 +12,7 @@ interface Props {
 
 export function RoundResult({ result, roundIndex, totalRounds, onContinue, isLast }: Props) {
   const [displayed, setDisplayed] = useState(0)
-  const { score, guessedYear, actualYear, magazineTitle } = result
+  const { score, guessedYear, actualYear, magazineTitle, magazineIdentifier } = result
   const delta = Math.abs(guessedYear - actualYear)
   const color = scoreToColor(score)
 
@@ -80,6 +80,16 @@ export function RoundResult({ result, roundIndex, totalRounds, onContinue, isLas
           <div className="text-gold-400 text-3xl font-medium">{actualYear}</div>
         </div>
       </div>
+
+      {/* Link to full Magazine */}
+      <a
+        href={`https://archive.org/details/${magazineIdentifier}`}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="font-sans text-sepia-400/60 text-sm hover:text-sepia-300 transition-colors duration-150 underline underline-offset-2"
+      >
+        See the full magazine
+      </a>
 
       <button
         onClick={onContinue}
