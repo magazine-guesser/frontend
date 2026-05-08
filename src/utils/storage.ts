@@ -65,7 +65,7 @@ export function loadGameCheckpoint(dateStr: string): GameCheckpoint | null {
     if (!raw) return null
     const checkpoint = JSON.parse(raw) as GameCheckpoint
     if (checkpoint.dateStr !== dateStr) {
-      localStorage.removeItem(CHECKPOINT_KEY)
+      clearGameCheckpoint()
       return null
     }
     return checkpoint
