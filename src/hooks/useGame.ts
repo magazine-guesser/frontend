@@ -1,7 +1,12 @@
 import { useState, useEffect } from 'react'
 import type { Magazine, RoundResult, DailyChallenge } from '../api/types'
 import { api } from '../api'
-import { saveChallengeResult } from '../utils/storage'
+import {
+  saveChallengeResult,
+  saveGameCheckpoint,
+  loadGameCheckpoint,
+  clearGameCheckpoint,
+} from '../utils/storage'
 import { getTodayDateStr } from '../utils/dateUtils'
 
 export type GamePhase = 'loading' | 'viewing' | 'result' | 'complete'
@@ -54,8 +59,16 @@ export function useGame(): GameState & GameActions {
       try {
         const challenge = await api.getDailyChallenge(dateStr)
         setChallenge(challenge)
-        setSequenceIndex(challenge?.magazines[0].startPage ?? 0)
-        setPhase('viewing')
+        const checkpoint = loadGameCheckpoint(dateStr)
+        if (checkpoint) {
+          setRoundIndex(checkpoint.roundIndex)
+          setRounds(checkpoint.rounds)
+          setSequenceIndex(0)
+          setPhase(checkpoint.phase)
+        } else {
+          setSequenceIndex(challenge?.magazines[0].startPage ?? 0)
+          setPhase('viewing')
+        }
       } catch {
         setError('Failed to load daily challange. Please try again')
       }
@@ -83,12 +96,14 @@ export function useGame(): GameState & GameActions {
     const newRounds = [...rounds, result]
     setRounds(newRounds)
     setPhase('result')
+    saveGameCheckpoint({ dateStr, roundIndex, rounds: newRounds, phase: 'result' })
   }
 
   function advanceRound() {
     if (roundIndex === 2) {
       const totalScore = rounds.reduce((s, r) => s + r.score, 0)
       saveChallengeResult({ date: dateStr, totalScore, rounds })
+      clearGameCheckpoint()
       setPhase('complete')
     } else {
       const nextIdx = roundIndex + 1
@@ -96,6 +111,7 @@ export function useGame(): GameState & GameActions {
       setSequenceIndex(magazines[nextIdx]?.startPage ?? 0)
       setSliderYear(1960)
       setPhase('viewing')
+      saveGameCheckpoint({ dateStr, roundIndex: nextIdx, rounds, phase: 'viewing' })
     }
   }
 
