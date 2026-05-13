@@ -27,7 +27,7 @@ jobs:
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v4
         with:
-          role-to-assume: arn:aws:iam::464108382357:role/InfraStack-GithubOicdFrontendRoleBF84A30E-iklD6Ed787LI
+          role-to-assume: arn:aws:iam::${{ vars.AWS_ACCOUNT_ID }}:role/mg-github-frontend
           aws-region: eu-central-1
 
       - name: Setup Node
