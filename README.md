@@ -52,6 +52,8 @@ The single pages are received by calling `https://archive.org/download/${identif
 
 ## localStorage Schema
 
+### Completed challenges
+
 Completed daily challenges are stored under the key `magazineGuessr_challenges`:
 
 ```json
@@ -78,3 +80,26 @@ Completed daily challenges are stored under the key `magazineGuessr_challenges`:
   }
 }
 ```
+
+### Game checkpoint
+
+An game session is saved under the key `magazineGuessr_checkpoint`. This object is updated after each guess and at the start of a new round. On page load, if a checkpoint exists for todays date it is restored, returning the player to the round and phase they left. The checkpoint is cleared on challenge completion or on the next day.
+
+```json
+{
+  "dateStr": "2026-04-23",
+  "roundIndex": 1,
+  "phase": "viewing",
+  "rounds": [
+    {
+      "magazineIdentifier": "vogue196506",
+      "magazineTitle": "Vogue, June 1965",
+      "actualYear": 1965,
+      "guessedYear": 1962,
+      "score": 880
+    }
+  ]
+}
+```
+
+`phase` is either `"viewing"` (player is browsing the magazine) or `"result"` (player has submitted a guess and is seeing the round result).
