@@ -40,7 +40,7 @@ export function MagazineViewer({
     return () => window.removeEventListener('keydown', handleKey)
   }, [canNext, canPrev, handleNext, handlePrev])
 
-  const spreadLabel = `${sequenceIndex}` //TODO: add total page count
+  const spreadLabel = `${sequenceIndex + 1}` //TODO: add total page count
 
   return (
     <div className="relative flex flex-col flex-1 min-h-0 bg-charcoal-900 overflow-hidden">
